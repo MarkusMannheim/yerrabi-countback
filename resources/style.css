@@ -1,0 +1,103 @@
+/* colours
+blue: #009CBF
+orange: #F75F00
+green: #00A388
+--tint-1: #333;
+--tint-2: #666;
+--tint-3: #999;
+--tint-4: #ccc;
+--tint-5: #e6e6e6;
+--tint-6: #f2f2f2;
+ */
+@font-face {
+  font-family: "ABCSans Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("ABCSans Regular"), url("../fonts/abcsans-regular.woff") format("woff");
+}
+@font-face {
+  font-family: "ABCSans Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("ABCSans Light"), url("../fonts/abcsans-light.woff") format("woff");
+}
+@font-face {
+  font-family: "ABCSans Black";
+  font-style: normal;
+  font-weight: normal;
+  src: local("ABCSans Black"), url("../fonts/abcsans-black.woff") format("woff");
+}
+:root {
+  font-size: 1em;
+  font-family: "ABCSans Regular", "Arial", sans-serif;
+  color: #333;
+}
+body {
+  overflow: hidden;
+}
+h1, p {
+  margin: 0;
+}
+#container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-flow: column;
+}
+#chart {
+  opacity: 0;
+  height: 100%;
+  margin: 1rem 0 .75rem 0;
+}
+.candidate {
+  opacity: 0;
+  display: flex;
+  flex-flow: row;
+  position: absolute;
+}
+.head {
+  font-size: .8rem;
+  font-weight: bold;
+  width: 100px;
+  max-width: 102px;
+  margin-right: 2px;
+  text-align: right;
+  padding: 0 .5rem;
+  color: white;
+  background: #999;
+}
+.background {
+  background: #f2f2f2;
+}
+.result {
+  background: #999;
+  height: 100%;
+}
+.exhausted .head {
+  background: #666;
+}
+.ALP .head, .ALP .result {
+  background: #d61515;
+}
+.LIB .head, .LIB .result{
+  background: #1467cc;
+}
+.GREEN .head, .GREEN .result {
+  background: #79c400;
+}
+#title {
+  font-size: 1.2rem;
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
+}
+#footer {
+  font-size: .85rem;
+}
+a, a:visited {
+  color: #009CBF;
+  text-decoration: #009CBF;
+}
+@media only screen and (min-width: 500px) {
+}

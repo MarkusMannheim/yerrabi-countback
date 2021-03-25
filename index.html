@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155991615-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "UA-155991615-1");
+    </script>
+    <!-- my stuff -->
+    <meta charset="utf-8">
+    <title>Yerrabi 2020</title>
+    <meta name="description" content="Preference flows in Yerrabi in the 2020 ACT election.">
+    <meta name="keywords" content="yerrabi, preferences, act, election, 2020, canberra, voting, votes">
+    <meta name="author" content="Markus Mannheim">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <link href="./resources/style.css" rel="stylesheet">
+    <link href="./resources/abcLogo64.png" rel="icon">
+  </head>
+  <body>
+    <!-- initial layout -->
+    <div id="container">
+      <div id="title">Vote count in Yerrabi:</div>
+      <div id="chart">
+        <div id="divider"></div>
+      </div>
+      <div id="footer">Source: <a href='https://www.elections.act.gov.au/elections_and_voting/2020_legislative_assembly_election/distribution-of-preferences-2020' target='_blank'>ACT Electoral Commission</a></div>
+    </div>
+    <script>
+      // name page elements
+      container = d3.select("#container");
+      chart = d3.select("#chart");
+      divider = d3.select("#divider");
+      // load data
+      d3.csv("./data/electionData.csv")
+        .then(function(data) {
+          // format data
+          electionData = data
+            .map(function(d) {
+              d.votes = d.votes
+                .replace(/[\[\]]/g, "")
+                .split(", ").map(function(e) {
+                  return +e;
+                });
+              return d;
+            });
+          electionData = electionData
+            .slice(0, -1)
+            .sort(function(a, b) {
+              return d3.descending(a.votes[0], b.votes[0]);
+            }).concat(electionData.slice(-1));
+          // prepare chart
+          quota = 8910
+          candidates = chart
+            .selectAll(".candidate")
+              .data(electionData)
+            .enter().append("div")
+              .attr("class", function(d) { return d.name_last == "exhausted" ? "exhausted" : d.party; })
+              .classed("candidate", true);
+          heads = candidates
+            .append("div")
+              .classed("head", true)
+              .text(function(d) { return d.name_last; });
+          backgrounds = candidates
+            .append("div")
+              .classed("background", true);
+          results = backgrounds
+            .append("div")
+              .classed("result", true)
+              .style("width", "0px");
+          x = d3.scaleLinear()
+            .domain([0, 13087]);
+          y = d3.scaleBand()
+            .domain(electionData.map(function(d) { return d.name_last; }))
+            .padding(.1);
+          // draw chart
+          window.addEventListener("resize", resize);
+          chart.transition()
+              .duration(500)
+              .style("opacity", 1)
+            .on("end", resize);
+          d3.timeout(start, 1000);
+        });
+        dimensions = document.getElementById("chart").getBoundingClientRect();
+        function resize() {
+        width = dimensions.width;
+        height = dimensions.height;
+        headerHeight = dimensions.top;
+        x.range([0, width - 102]);
+        y.range([0, height]);
+        candidates.style("height", y.bandwidth() + "px")
+          .style("line-height", y.bandwidth() + "px");
+        backgrounds.style("width", (width - 102) + "px");
+      }
+      function start() {
+        count = 0;
+        loopLength = 1000;
+        candidates.transition()
+          .duration(loopLength)
+          .style("top", function(d) { return (y(d.name_last) + headerHeight) + "px"; })
+          .style("opacity", 1);
+        results.transition()
+          .duration(loopLength)
+          .style("width", function(d) { return x(d.votes[count]) + "px"; });
+      }
+    </script>
+  </body>
+</html>
